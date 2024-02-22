@@ -1,0 +1,6 @@
+apiVersion: v2
+name: CSI_AZURE_FAKE_SECRETS
+description: Azure fake secrets
+type: application
+
+version: "0.1"

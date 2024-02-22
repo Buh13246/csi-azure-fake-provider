@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csi-fake-secrets-provider
+  labels:
+    app: csi-fake-secrets-provider
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csi-fake-secrets-provider
+  template:
+    metadata:
+      labels:
+        app: csi-fake-secrets-provider
+    spec:
+      containers:
+      - image: csi-azure-fake-provider
+        imagePullPolicy: IfNotPresent
+        name: csi-azure-fake-provider
+        volumeMounts:
+        - mountPath: /etc/kubernetes/secrets-store-csi-providers/
+          name: csi-secrets-provider-vol
+        - mountPath: /values/
+          name: values-vol
+      volumes:
+      - name: csi-secrets-provider-vol
+        hostPath:
+          path: /etc/kubernetes/secrets-store-csi-providers/
+          type: Directory
+      - name: values-vol
+        configMap:
+          name: csi-azure-fake-provider-values

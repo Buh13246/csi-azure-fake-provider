@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: hello
+spec:
+  containers:
+  - name: hello
+    image: busybox
+    command: ['sh', '-c', 'echo "Hello, Kubernetes!" && sleep 3600']
+    env:
+    - name: TEST_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: csi-fake-secrets
+          key: test_secret
+    volumeMounts:
+    - name: secret-vol
+      mountPath: "/mnt/secrets-store"
+      readOnly: true
+  restartPolicy: OnFailure
+  volumes:
+  - name: secret-vol
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: "my-secret-provider"
